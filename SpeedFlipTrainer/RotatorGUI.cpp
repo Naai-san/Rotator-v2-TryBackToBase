@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "SpeedFlipTrainer.h"
+#include "Rotator.h"
 #include "ImGuiFileDialog.h"
 #include "BotAttempt.h"
 
 
 // Plugin Settings Window code here
-std::string SpeedFlipTrainer::GetPluginName() {
-	return "SpeedFlipTrainer";
+std::string Rotator::GetPluginName() {
+	return "Rotator";
 }
 
 // Render the plugin settings here
 // This will show up in bakkesmod when the plugin is loaded at
-//  f2 -> plugins -> SpeedFlipTrainer
-void SpeedFlipTrainer::RenderSettings() {
+//  f2 -> plugins -> Rotator
+void Rotator::RenderSettings() {
 	ImGui::TextUnformatted("A plugin to help give training metrics when learning how to do a speedflip in Musty's training pack: A503-264C-A7EB-D282");
 
 	CVarWrapper enableCvar = cvarManager->getCvar("sf_enabled");
@@ -191,7 +191,7 @@ void SpeedFlipTrainer::RenderSettings() {
 
 
 // Do ImGui rendering here
-void SpeedFlipTrainer::Render()
+void Rotator::Render()
 {
 	if (!ImGui::Begin(menuTitle_.c_str(), &isWindowOpen_, ImGuiWindowFlags_None))
 	{
@@ -202,7 +202,7 @@ void SpeedFlipTrainer::Render()
 
 	if (ImGui::Button("Enable manual mode"))
 	{
-		mode = SpeedFlipTrainerMode::Manual;
+		mode = RotatorMode::Manual;
 		LOG("MODE = Manual");
 	}
 	ImGui::SameLine();
@@ -215,7 +215,7 @@ void SpeedFlipTrainer::Render()
 
 	if (ImGui::Button("Replay last attempt"))
 	{
-		mode = SpeedFlipTrainerMode::Replay;
+		mode = RotatorMode::Replay;
 		LOG("MODE = Replay");
 		replayAttempt = attempt;
 	}
@@ -230,7 +230,7 @@ void SpeedFlipTrainer::Render()
 		{
 			auto a = Attempt();
 			a.ReadInputsFromFile(attemptFileDialog.selected);
-			mode = SpeedFlipTrainerMode::Replay;
+			mode = RotatorMode::Replay;
 			LOG("MODE = Replay");
 			replayAttempt = a;
 			LOG("Loaded attempt from file: {0}", attemptFileDialog.selected.string());
@@ -244,14 +244,14 @@ void SpeedFlipTrainer::Render()
 	if (ImGui::Button("Load -26 Bot"))
 	{
 		bot.Become26Bot();
-		mode = SpeedFlipTrainerMode::Bot;
+		mode = RotatorMode::Bot;
 		LOG("MODE = Bot");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load -45 Bot"))
 	{
 		bot.Become45Bot();
-		mode = SpeedFlipTrainerMode::Bot;
+		mode = RotatorMode::Bot;
 		LOG("MODE = Bot");
 	}
 	ImGui::SameLine();
@@ -265,7 +265,7 @@ void SpeedFlipTrainer::Render()
 		{
 			bot.ReadInputsFromFile(botFileDialog.selected);
 			LOG("Loaded bot from file: {0}", botFileDialog.selected.string());
-			mode = SpeedFlipTrainerMode::Bot;
+			mode = RotatorMode::Bot;
 			LOG("MODE = Bot");
 		}
 		catch (...)
@@ -283,43 +283,43 @@ void SpeedFlipTrainer::Render()
 }
 
 // Name of the menu that is used to toggle the window.
-std::string SpeedFlipTrainer::GetMenuName()
+std::string Rotator::GetMenuName()
 {
-	return "SpeedFlipTrainer";
+	return "Rotator";
 }
 
 // Title to give the menu
-std::string SpeedFlipTrainer::GetMenuTitle()
+std::string Rotator::GetMenuTitle()
 {
 	return menuTitle_;
 }
 
 // Don't call this yourself, BM will call this function with a pointer to the current ImGui context
-void SpeedFlipTrainer::SetImGuiContext(uintptr_t ctx)
+void Rotator::SetImGuiContext(uintptr_t ctx)
 {
 	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(ctx));
 }
 
 // Should events such as mouse clicks/key inputs be blocked so they won't reach the game
-bool SpeedFlipTrainer::ShouldBlockInput()
+bool Rotator::ShouldBlockInput()
 {
 	return ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard;
 }
 
 // Return true if window should be interactive
-bool SpeedFlipTrainer::IsActiveOverlay()
+bool Rotator::IsActiveOverlay()
 {
 	return true;
 }
 
 // Called when window is opened
-void SpeedFlipTrainer::OnOpen()
+void Rotator::OnOpen()
 {
 	isWindowOpen_ = true;
 }
 
 // Called when window is closed
-void SpeedFlipTrainer::OnClose()
+void Rotator::OnClose()
 {
 	isWindowOpen_ = false;
 }

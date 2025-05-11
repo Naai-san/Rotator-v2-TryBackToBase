@@ -1,5 +1,5 @@
 #include "pch.h"	
-#include "SpeedFlipTrainer.h"
+#include "Rotator.h"
 #include "RenderMeter.h"
 #include <array>
 #include "BotAttempt.h"
@@ -16,8 +16,8 @@ struct clock_time {
 	int min_hand;
 };
 
-// SpeedFlipTrainer.cpp - Implémentation de la fonction
-/*void SpeedFlipTrainer::RenderCarAxes(CanvasWrapper canvas)
+// Rotator.cpp - Implémentation de la fonction
+/*void Rotator::RenderCarAxes(CanvasWrapper canvas)
 {
 	if (!*enabled || !loaded || !*showCarAxes || !gameWrapper->IsInCustomTraining())
 		return;
@@ -128,10 +128,10 @@ struct Orientation {
 	Vector up;
 };
 
-// SpeedFlipTrainer.cpp - Ajoutez ces fonctions NEWVER
+// Rotator.cpp - Ajoutez ces fonctions NEWVER
 
 // Fonction utilitaire pour convertir Rotator en vecteurs d'orientation
-SpeedFlipTrainer::Orientation SpeedFlipTrainer::RotatorToMatrix(const Rotator& rotation) {
+Rotator::Orientation Rotator::RotatorToMatrix(const Rotator& rotation) {
 	Orientation result;
 
 	// Conversion de rotations en radians
@@ -177,7 +177,7 @@ struct Vector4 {
 
 
 // Fonction pour obtenir la matrice de projection de la caméra
-Matrix SpeedFlipTrainer::GetViewProjectionMatrix(CameraWrapper camera) {
+Matrix Rotator::GetViewProjectionMatrix(CameraWrapper camera) {
 	Matrix result = {};
 
 	// Obtenir la position et la rotation de la caméra
@@ -248,7 +248,7 @@ Matrix SpeedFlipTrainer::GetViewProjectionMatrix(CameraWrapper camera) {
 }
 
 // Fonction pour convertir un point 3D en 2D pour l'affichage
-Vector2 SpeedFlipTrainer::WorldToScreen(CanvasWrapper canvas, Vector location) {
+Vector2 Rotator::WorldToScreen(CanvasWrapper canvas, Vector location) {
 	auto screenSize = canvas.GetSize();
 	if (auto currentCamera = gameWrapper->GetCamera()) {
 		// Obtenir la matrice de projection à partir de la caméra
@@ -277,13 +277,13 @@ Vector2 SpeedFlipTrainer::WorldToScreen(CanvasWrapper canvas, Vector location) {
 
 
 // Fonction pour vérifier si un point est visible à l'écran
-bool SpeedFlipTrainer::IsPointOnScreen(const Vector2& point, float screenWidth, float screenHeight) {
+bool Rotator::IsPointOnScreen(const Vector2& point, float screenWidth, float screenHeight) {
 	return point.X >= 0 && point.X <= screenWidth &&
 		point.Y >= 0 && point.Y <= screenHeight;
 }
 
 // Fonction pour dessiner une ligne avec une flèche à la fin
-void SpeedFlipTrainer::DrawArrow(CanvasWrapper& canvas, Vector2 start, Vector2 end, const struct Color& color) {
+void Rotator::DrawArrow(CanvasWrapper& canvas, Vector2 start, Vector2 end, const struct Color& color) {
 	// Dessiner la ligne principale
 	canvas.SetColor(color.red, color.green, color.blue, (char)(255 * color.opacity));
 	canvas.DrawLine(start, end, 2);
@@ -316,7 +316,7 @@ void SpeedFlipTrainer::DrawArrow(CanvasWrapper& canvas, Vector2 start, Vector2 e
 }
 
 // Implémentation principale du rendu des axes
-void SpeedFlipTrainer::RenderCarAxes(CanvasWrapper canvas) {
+void Rotator::RenderCarAxes(CanvasWrapper canvas) {
 	if (!*enabled || !loaded || !*showCarAxes || !gameWrapper->IsInCustomTraining())
 		return;
 
@@ -442,7 +442,7 @@ void SpeedFlipTrainer::RenderCarAxes(CanvasWrapper canvas) {
 }
 
 // Modifier la fonction RenderMeters pour appeler la nouvelle fonction
-void SpeedFlipTrainer::RenderMeters(CanvasWrapper canvas)
+void Rotator::RenderMeters(CanvasWrapper canvas)
 {
 	bool training = gameWrapper->IsInCustomTraining();
 
@@ -503,7 +503,7 @@ float distance(Vector a, Vector b)
 		pow(a.Y - b.Y, 2));
 }
 
-void SpeedFlipTrainer::Measure(CarWrapper car, std::shared_ptr<GameWrapper> gameWrapper)
+void Rotator::Measure(CarWrapper car, std::shared_ptr<GameWrapper> gameWrapper)
 {
 	int currentPhysicsFrame = gameWrapper->GetEngine().GetPhysicsFrame();
 	int currentTick = currentPhysicsFrame - startingPhysicsFrame;
@@ -549,14 +549,14 @@ void SpeedFlipTrainer::Measure(CarWrapper car, std::shared_ptr<GameWrapper> game
 	}
 }
 
-void SpeedFlipTrainer::Hook()
+void Rotator::Hook()
 {
 	if (loaded)
 		return;
 	loaded = true;
 
 	LOG("Hooking");
-	gameWrapper->RegisterDrawable(bind(&SpeedFlipTrainer::RenderMeters, this, std::placeholders::_1));
+	gameWrapper->RegisterDrawable(bind(&Rotator::RenderMeters, this, std::placeholders::_1));
 
 	if (*rememberSpeed)
 		_globalCvarManager->getCvar("sv_soccar_gamespeed").setValue(*speed);
@@ -574,9 +574,9 @@ void SpeedFlipTrainer::Hook()
 
 		auto input = (ControllerInput*)params;
 
-		if(mode == SpeedFlipTrainerMode::Bot)
+		if(mode == RotatorMode::Bot)
 			PlayBot(gameWrapper, input);
-		else if (mode == SpeedFlipTrainerMode::Replay)
+		else if (mode == RotatorMode::Replay)
 			PlayAttempt(&replayAttempt, gameWrapper, input);
 
 		// Has time started counting down?
@@ -686,7 +686,7 @@ void SpeedFlipTrainer::Hook()
 	});
 }
 
-void SpeedFlipTrainer::onLoad()
+void Rotator::onLoad()
 {
 	_globalCvarManager = cvarManager;
 
@@ -755,7 +755,7 @@ void SpeedFlipTrainer::onLoad()
 
 }
 
-void SpeedFlipTrainer::onUnload()
+void Rotator::onUnload()
 {
 	if (!loaded)
 		return;
@@ -769,7 +769,7 @@ void SpeedFlipTrainer::onUnload()
 	gameWrapper->UnregisterDrawables();
 }
 
-bool SpeedFlipTrainer::IsMustysPack(TrainingEditorWrapper tw)
+bool Rotator::IsMustysPack(TrainingEditorWrapper tw)
 {
 	if (!tw.IsNull())
 	{
@@ -793,7 +793,7 @@ bool SpeedFlipTrainer::IsMustysPack(TrainingEditorWrapper tw)
 	return false;
 }
 
-void SpeedFlipTrainer::RenderPositionMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
+void Rotator::RenderPositionMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
 {
 	float mid = -1.1;
 	int range = 200;
@@ -870,7 +870,7 @@ void SpeedFlipTrainer::RenderPositionMeter(CanvasWrapper canvas, float screenWid
 	}
 }
 
-void SpeedFlipTrainer::RenderFirstJumpMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
+void Rotator::RenderFirstJumpMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
 {
 	int totalUnits = *jumpHigh - *jumpLow;
 	int halfMark = totalUnits / 2;
@@ -946,7 +946,7 @@ void SpeedFlipTrainer::RenderFirstJumpMeter(CanvasWrapper canvas, float screenWi
 	canvas.DrawString(msg, 1, 1, true, false);
 }
 
-void SpeedFlipTrainer::RenderFlipCancelMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
+void Rotator::RenderFlipCancelMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
 {
 	float opacity = 1.0;
 	int totalUnits = *flipCancelThreshold;
@@ -996,7 +996,7 @@ void SpeedFlipTrainer::RenderFlipCancelMeter(CanvasWrapper canvas, float screenW
 	canvas.DrawString(msg, 1, 1, true, false);
 }
 
-void SpeedFlipTrainer::RenderAngleMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
+void Rotator::RenderAngleMeter(CanvasWrapper canvas, float screenWidth, float screenHeight)
 {
 	// Cap angle at 90
 	int totalUnits = 180;
@@ -1144,7 +1144,7 @@ void SpeedFlipTrainer::RenderAngleMeter(CanvasWrapper canvas, float screenWidth,
 	}
 }
 
-void SpeedFlipTrainer::PlayAttempt(Attempt* a, shared_ptr<GameWrapper> gameWrapper, ControllerInput* ci)
+void Rotator::PlayAttempt(Attempt* a, shared_ptr<GameWrapper> gameWrapper, ControllerInput* ci)
 {
 	if (a->inputs.size() <= 0)
 		return;
@@ -1157,7 +1157,7 @@ void SpeedFlipTrainer::PlayAttempt(Attempt* a, shared_ptr<GameWrapper> gameWrapp
 	gameWrapper->OverrideParams(ci, sizeof(ControllerInput));
 }
 
-void SpeedFlipTrainer::PlayBot(shared_ptr<GameWrapper> gameWrapper, ControllerInput* ci)
+void Rotator::PlayBot(shared_ptr<GameWrapper> gameWrapper, ControllerInput* ci)
 {
 	int currentPhysicsFrame = gameWrapper->GetEngine().GetPhysicsFrame();
 	int tick = currentPhysicsFrame - startingPhysicsFrame;
@@ -1167,4 +1167,4 @@ void SpeedFlipTrainer::PlayBot(shared_ptr<GameWrapper> gameWrapper, ControllerIn
 	gameWrapper->OverrideParams(ci, sizeof(ControllerInput));
 }
 
-BAKKESMOD_PLUGIN(SpeedFlipTrainer, "Speedflip trainer", plugin_version, PLUGINTYPE_CUSTOM_TRAINING)
+BAKKESMOD_PLUGIN(Rotator, "Rotator", plugin_version, PLUGINTYPE_CUSTOM_TRAINING)

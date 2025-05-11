@@ -10,15 +10,15 @@
 #include "Attempt.h"
 
 // Ensure the class is not redefined
-#ifndef SPEEDFLIPTRAINER_H
-#define SPEEDFLIPTRAINER_H
+#ifndef Rotator_H
+#define Rotator_H
 
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
 using namespace std;
 
-enum class SpeedFlipTrainerMode
+enum class RotatorMode
 {
 	Replay,
 	Bot,
@@ -47,13 +47,13 @@ struct Matrix {
 	}
 };
 
-class SpeedFlipTrainer: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow, public BakkesMod::Plugin::PluginWindow
+class Rotator: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow, public BakkesMod::Plugin::PluginWindow
 {
 public: 
 	// DEBUT
 
 
-	// SpeedFlipTrainer.h - Ajoutez ces définitions dans la partie publique ou privée de la classe
+	// Rotator.h - Ajoutez ces définitions dans la partie publique ou privée de la classe
 	// Structure pour stocker les vecteurs d'orientation
 	struct Orientation {
 		Vector forward;
@@ -82,14 +82,14 @@ public:
 	// Fonction pour obtenir la matrice de projection de la caméra
 	Matrix GetViewProjectionMatrix(CameraWrapper camera);
 
-	// Dans la déclaration de la classe SpeedFlipTrainer
+	// Dans la déclaration de la classe Rotator
 	std::shared_ptr<float> axisLength = std::make_shared<float>(150.0f);
 
 	// FIN
 
 private:
 
-	SpeedFlipTrainerMode mode = SpeedFlipTrainerMode::Manual;
+	RotatorMode mode = RotatorMode::Manual;
 
 	// Whether plugin is enabled
 	shared_ptr<bool> enabled = make_shared<bool>(true);
@@ -182,7 +182,7 @@ private:
 	// Inherited via PluginWindow
 	bool isWindowOpen_ = false;
 	bool isMinimized_ = false;
-	std::string menuTitle_ = "Speedflip Trainer";
+	std::string menuTitle_ = "Rotator";
 
 	virtual void Render() override;
 	virtual std::string GetMenuName() override;
@@ -199,4 +199,4 @@ private:
 };
 
 
-#endif // SPEEDFLIPTRAINER_H
+#endif // Rotator_H

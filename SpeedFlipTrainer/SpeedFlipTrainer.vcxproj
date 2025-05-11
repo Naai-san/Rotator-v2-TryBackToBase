@@ -11,6 +11,7 @@
     <ProjectGuid>{ab079bd3-2f97-45a1-b14d-df66d739359f}</ProjectGuid>
     <RootNamespace>SpeedFlipTrainer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Rotator</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -112,8 +113,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RenderMeter.cpp" />
-    <ClCompile Include="SpeedFlipTrainer.cpp" />
-    <ClCompile Include="SpeedFlipTrainerGUI.cpp" />
+    <ClCompile Include="Rotator.cpp" />
+    <ClCompile Include="RotatorGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attempt.h" />
@@ -134,7 +135,7 @@
     <ClInclude Include="ImGuiFileDialog.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderMeter.h" />
-    <ClInclude Include="SpeedFlipTrainer.h" />
+    <ClInclude Include="Rotator.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
