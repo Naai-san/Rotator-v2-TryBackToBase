@@ -8,6 +8,12 @@
 
 #include "version.h"
 #include "Attempt.h"
+
+// Ensure the class is not redefined
+#ifndef SPEEDFLIPTRAINER_H
+#define SPEEDFLIPTRAINER_H
+
+
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
 using namespace std;
@@ -19,10 +25,18 @@ enum class SpeedFlipTrainerMode
 	Manual
 };
 
+struct Vector4 {
+	float X, Y, Z, W;
+
+	Vector4() : X(0), Y(0), Z(0), W(1.0f) {}
+	Vector4(float x, float y, float z, float w) : X(x), Y(y), Z(z), W(w) {}
+	Vector4(const Vector& v) : X(v.X), Y(v.Y), Z(v.Z), W(1.0f) {}
+};
+
 struct Matrix {
 	float M[4][4];
 
-	// Opérateur permettant de multiplier une matrice par un Vector4
+	// Corrected operator* function
 	Vector4 operator*(const Vector4& vec) const {
 		Vector4 result;
 		result.X = M[0][0] * vec.X + M[0][1] * vec.Y + M[0][2] * vec.Z + M[0][3] * vec.W;
@@ -31,11 +45,6 @@ struct Matrix {
 		result.W = M[3][0] * vec.X + M[3][1] * vec.Y + M[3][2] * vec.Z + M[3][3] * vec.W;
 		return result;
 	}
-};
-
-class SpeedFlipTrainer {
-public:
-	Matrix GetViewProjectionMatrix(CameraWrapper camera);
 };
 
 class SpeedFlipTrainer: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow, public BakkesMod::Plugin::PluginWindow
@@ -189,3 +198,5 @@ private:
 	ImGui::FileDialog botFileDialog;
 };
 
+
+#endif // SPEEDFLIPTRAINER_H

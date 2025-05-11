@@ -9,8 +9,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-BAKKESMOD_PLUGIN(SpeedFlipTrainer, "Speedflip trainer", plugin_version, PLUGINTYPE_CUSTOM_TRAINING)
-
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
 struct clock_time {
@@ -168,14 +166,14 @@ SpeedFlipTrainer::Orientation SpeedFlipTrainer::RotatorToMatrix(const Rotator& r
 	return result;
 }
 
-// Définition d'une structure Vector4 pour les calculs de projection
+/*// Définition d'une structure Vector4 pour les calculs de projection // 1.	Ensure Vector4 is Defined: The Vector4 struct must be defined before it is used in the Matrix struct. This ensures the compiler knows what Vector4 is when it encounters the operator* function.
 struct Vector4 {
 	float X, Y, Z, W;
 
 	Vector4() : X(0), Y(0), Z(0), W(1.0f) {}
 	Vector4(float x, float y, float z, float w) : X(x), Y(y), Z(z), W(w) {}
 	Vector4(const Vector& v) : X(v.X), Y(v.Y), Z(v.Z), W(1.0f) {}
-};
+};*/
 
 
 // Fonction pour obtenir la matrice de projection de la caméra
@@ -1168,3 +1166,5 @@ void SpeedFlipTrainer::PlayBot(shared_ptr<GameWrapper> gameWrapper, ControllerIn
 
 	gameWrapper->OverrideParams(ci, sizeof(ControllerInput));
 }
+
+BAKKESMOD_PLUGIN(SpeedFlipTrainer, "Speedflip trainer", plugin_version, PLUGINTYPE_CUSTOM_TRAINING)
